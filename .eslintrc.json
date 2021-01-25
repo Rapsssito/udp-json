@@ -1,4 +1,5 @@
 {
+    "parser": "babel-eslint",
     "plugins": ["prettier", "jest"],
     "env": {
         "es6": true,
@@ -26,6 +27,6 @@
         "no-var": "error",
         "prefer-template": 2,
         "require-atomic-updates": "off",
-        "prettier/prettier": ["error"]
+        "prettier/prettier": ["error", {"endOfLine": "auto"}]
     }
 }

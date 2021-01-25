@@ -5,7 +5,9 @@
         "noEmit": true,
         "strict": true,
         "skipLibCheck": true,
-        "typeRoots": []
+        "moduleResolution": "node",
+        "target": "ES2015",
+        "typeRoots": ["node_modules/@types"]
     },
     "include": ["src", "lib"]
 }
