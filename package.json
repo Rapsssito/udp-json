@@ -1,0 +1,54 @@
+{
+  "name": "udp-json",
+  "version": "0.0.1",
+  "description": "UDP socket API for Android & iOS",
+  "homepage": "https://github.com/Rapsssito/udp-json",
+  "main": "src/index.js",
+  "types": "lib/types/index.d.ts",
+  "scripts": {
+    "ci": "yarn install --frozen-lockfile && yarn lint && yarn declaration:build && yarn checkjs && yarn test",
+    "lint": "eslint .",
+    "checkjs": "tsc && tsc -p ./__tests__/tsconfig.json",
+    "test": "jest ./__tests__",
+    "declaration:build": "tsc -p ./declaration.tsconfig.json",
+    "prepublishOnly": "yarn declaration:build && yarn checkjs"
+  },
+  "browser": {
+    "dgram": "src/index.js"
+  },
+  "files": [
+    "/src",
+    "/lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Rapsssito/udp-json"
+  },
+  "keywords": [
+    "dgram",
+    "udp",
+    "json"
+  ],
+  "author": {
+    "name": "Rapsssito",
+    "email": "contact@rodrigomartin.dev"
+  },
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
+  "dependencies": {},
+  "devDependencies": {
+    "@semantic-release/changelog": "^5.0.0",
+    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/github": "^7.0.0",
+    "@semantic-release/npm": "^7.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-jest": "^23.6.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^26.6.3",
+    "prettier": "^1.18.2",
+    "semantic-release": "^17.0.1",
+    "typescript": "^4.1.3"
+  }
+}
