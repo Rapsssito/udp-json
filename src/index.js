@@ -58,7 +58,7 @@ class PendingDatagram {
     }
 }
 
-export default class JSONSocket extends EventEmitter {
+class JSONSocket extends EventEmitter {
     /**
      * @param {import('dgram').Socket} udpSocket
      * @param {{maxPayload?: number, timeout?: number}} [options]
@@ -198,3 +198,5 @@ export default class JSONSocket extends EventEmitter {
         return { id, currentDatagram, totalDatagram, payload };
     }
 }
+
+module.exports = JSONSocket;
