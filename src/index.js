@@ -4,7 +4,7 @@ class PendingDatagram {
     /**
      * @param {number} totalDatagrams
      * @param {import('dgram').RemoteInfo} rinfo
-     * @param {(partialPayload: string, error: string) => void} errorCallback
+     * @param {(partialPayload: string, error: Error) => void} errorCallback
      * @param {(payload: any) => void} completeCallback
      */
     constructor(totalDatagrams, rinfo, errorCallback, completeCallback) {
@@ -25,9 +25,11 @@ class PendingDatagram {
         if (rinfo.address !== this.rinfo.address || rinfo.port !== this.rinfo.port) {
             this.errorCallback(
                 this.getPayload(),
-                `Fragment ${datagramIndex}: RemoteInfo ${JSON.stringify(
-                    rinfo
-                )} does not match initial RemoteInfo ${JSON.stringify(this.rinfo)}`
+                new Error(
+                    `Fragment ${datagramIndex}: RemoteInfo ${JSON.stringify(
+                        rinfo
+                    )} does not match initial RemoteInfo ${JSON.stringify(this.rinfo)}`
+                )
             );
         }
         this.payloadMap.set(datagramIndex, payload);
@@ -151,7 +153,7 @@ class JSONSocket extends EventEmitter {
             pendingDatagram = new PendingDatagram(
                 totalDatagram,
                 rinfo,
-                (error, partialPayload) => this._onDatagramError(id, partialPayload, rinfo, error),
+                (partialPayload, error) => this._onDatagramError(id, partialPayload, rinfo, error),
                 (payload) => this._onDatagramComplete(id, payload, rinfo)
             );
             this.idMap.set(id, pendingDatagram);
@@ -166,7 +168,7 @@ class JSONSocket extends EventEmitter {
         /** @type {string} */ id,
         /** @type {string} */ partialPayload,
         /** @type {import('dgram').RemoteInfo} */ rinfo,
-        /** @type {string} */ error
+        /** @type {Error} */ error
     ) => {
         const buildError = new Error(`Error ${rinfo} payload ${partialPayload}: ${error}`);
         this.emit('message-error', buildError);
