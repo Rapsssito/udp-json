@@ -1,6 +1,6 @@
 {
   "name": "udp-json",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Lightweight JSON UDP socket API written in JavaScript for NodeJS",
   "homepage": "https://github.com/Rapsssito/udp-json",
   "main": "src/index.js",
