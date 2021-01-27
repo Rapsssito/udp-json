@@ -24,11 +24,16 @@
   "keywords": [
     "dgram",
     "udp",
-    "json"
+    "json",
+    "nodejs"
   ],
   "author": {
     "name": "Rapsssito",
     "email": "contact@rodrigomartin.dev"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/Rapsssito"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",
