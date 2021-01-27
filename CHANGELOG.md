@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/Rapsssito/udp-json/compare/v1.1.0...v1.1.1) (2021-01-27)
+
+
+### Bug Fixes
+
+* Add ready-to-go examples ([127102e](https://github.com/Rapsssito/udp-json/commit/127102eaec53f49f43b0e51dd4de6794138ae9c1))
+
 # [1.1.0](https://github.com/Rapsssito/udp-json/compare/v1.0.0...v1.1.0) (2021-01-27)
 
 
