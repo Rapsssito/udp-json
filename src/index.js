@@ -2,7 +2,7 @@ const EventEmitter = require('eventemitter3');
 
 class PendingDatagram {
     /**
-     * @param {{lastDatagram: number, timeout: number}} options
+     * @param {{datagramCount: number, timeout: number}} options
      * @param {import('dgram').RemoteInfo} rinfo
      * @param {(partialPayload: string, error: Error) => void} errorCallback
      * @param {(partialPayload: string, error: Error) => void} timeoutCallback
@@ -10,7 +10,7 @@ class PendingDatagram {
      */
     constructor(options, rinfo, errorCallback, timeoutCallback, completeCallback) {
         this.timeout = options.timeout;
-        this.lastDatagram = options.lastDatagram;
+        this.datagramCount = options.datagramCount;
         /** @private @type {Map<number, string>} */
         this.payloadMap = new Map();
         this.rinfo = rinfo;
@@ -56,15 +56,15 @@ class PendingDatagram {
     }
 
     isComplete() {
-        if (this.payloadMap.size !== this.lastDatagram + 1) return false;
+        if (this.payloadMap.size !== this.datagramCount) return false;
         const valueSum = Array.from(this.payloadMap.keys()).reduce((a, b) => a + b, 0);
-        const correctSum = (this.lastDatagram * (this.lastDatagram + 1)) / 2;
+        const correctSum = ((this.datagramCount - 1) * this.datagramCount) / 2;
         return valueSum === correctSum;
     }
 
     getPayload() {
         let result = '';
-        for (let i = 0; i <= this.lastDatagram; i++) {
+        for (let i = 0; i < this.datagramCount; i++) {
             result += this.payloadMap.has(i) ? this.payloadMap.get(i) : '';
         }
         return result;
@@ -95,11 +95,11 @@ class JSONSocket extends EventEmitter {
     send(obj, port, address, callback = () => {}) {
         const objString = JSON.stringify(obj);
         const chunks = this._getChunks(Buffer.from(objString), this.maxPayload);
-        const lastDatagram = chunks.length - 1;
+        const datagramCount = chunks.length;
         const id = (Date.now() & 0xffffffff) >>> 0;
         const sendPromises = chunks.map((ch, index) => {
             return new Promise((resolve, reject) => {
-                const msg = Buffer.concat([this._buildHeader(id, index, lastDatagram), ch]);
+                const msg = Buffer.concat([this._buildHeader(id, index, datagramCount), ch]);
                 this.udpSocket.send(msg, port, address, (err) => {
                     if (err) reject(err);
                     else resolve(null);
@@ -129,14 +129,14 @@ class JSONSocket extends EventEmitter {
      * @private
      * @param {number} id
      * @param {number} currentDatagram
-     * @param {number} lastDatagram
+     * @param {number} datagramCount
      */
-    _buildHeader(id, currentDatagram, lastDatagram) {
+    _buildHeader(id, currentDatagram, datagramCount) {
         const header = Buffer.allocUnsafe(12);
         // ID
         header.writeUInt32BE(id);
-        // Last datagram
-        header.writeUInt32BE(lastDatagram, 4);
+        // Datagram count
+        header.writeUInt32BE(datagramCount, 4);
         // Current datagram
         header.writeUInt32BE(currentDatagram, 8);
         return header;
@@ -153,11 +153,11 @@ class JSONSocket extends EventEmitter {
      * @private
      */
     _onMessage = (/** @type {Buffer} */ msg, /** @type {import('dgram').RemoteInfo} */ rinfo) => {
-        const { id, currentDatagram, lastDatagram, payload } = this._unwrapMessage(msg, rinfo);
+        const { id, currentDatagram, datagramCount, payload } = this._unwrapMessage(msg, rinfo);
         let pendingDatagram = this.idMap.get(id);
         if (pendingDatagram === undefined) {
             pendingDatagram = new PendingDatagram(
-                { lastDatagram: lastDatagram, timeout: this.timeout },
+                { datagramCount: datagramCount, timeout: this.timeout },
                 rinfo,
                 (partialPayload, error) => this._onDatagramError(id, partialPayload, rinfo, error),
                 (partialPayload, error) => this._onDatagramTimeout(id, partialPayload, rinfo, error),
@@ -215,10 +215,10 @@ class JSONSocket extends EventEmitter {
      */
     _unwrapMessage(msg, rinfo) {
         const id = `${rinfo.address}:${rinfo.port}:${msg.toString('base64', 0, 4)}`;
-        const lastDatagram = msg.readInt32BE(4);
+        const datagramCount = msg.readInt32BE(4);
         const currentDatagram = msg.readInt32BE(8);
         const payload = msg.toString('utf8', 12);
-        return { id, currentDatagram, lastDatagram, payload };
+        return { id, currentDatagram, datagramCount, payload };
     }
 }
 
