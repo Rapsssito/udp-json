@@ -19,19 +19,8 @@ class PendingDatagram {
     /**
      * @param {number} datagramIndex
      * @param {string} payload
-     * @param {import('dgram').RemoteInfo} rinfo
      */
-    addPayload(datagramIndex, payload, rinfo) {
-        if (rinfo.address !== this.rinfo.address || rinfo.port !== this.rinfo.port) {
-            this.errorCallback(
-                this.getPayload(),
-                new Error(
-                    `Fragment ${datagramIndex}: RemoteInfo ${JSON.stringify(
-                        rinfo
-                    )} does not match initial RemoteInfo ${JSON.stringify(this.rinfo)}`
-                )
-            );
-        }
+    addPayload(datagramIndex, payload) {
         this.payloadMap.set(datagramIndex, payload);
         if (this.isComplete()) {
             const rawPayload = this.getPayload();
@@ -81,13 +70,7 @@ class JSONSocket extends EventEmitter {
      * @param {(error: Error | null) => void} [callback]
      */
     send(obj, port, address, callback = () => {}) {
-        let objString;
-        try {
-            objString = JSON.stringify(obj);
-        } catch (e) {
-            callback(e);
-            return;
-        }
+        const objString = JSON.stringify(obj);
         const chunks = this._getChunks(Buffer.from(objString), this.maxPayload);
         const totalDatagram = chunks.length - 1;
         const id = (Date.now() & 0xffffffff) >>> 0;
@@ -158,7 +141,7 @@ class JSONSocket extends EventEmitter {
             );
             this.idMap.set(id, pendingDatagram);
         }
-        pendingDatagram.addPayload(currentDatagram, payload, rinfo);
+        pendingDatagram.addPayload(currentDatagram, payload);
     };
 
     /**
@@ -170,7 +153,7 @@ class JSONSocket extends EventEmitter {
         /** @type {import('dgram').RemoteInfo} */ rinfo,
         /** @type {Error} */ error
     ) => {
-        const buildError = new Error(`Error ${rinfo} payload ${partialPayload}: ${error}`);
+        const buildError = new Error(`Error ${JSON.stringify(rinfo)} payload ${partialPayload}: ${error}`);
         this.emit('message-error', buildError);
         this.idMap.delete(id);
     };
