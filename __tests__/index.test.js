@@ -3,6 +3,8 @@ const dgram = require('dgram');
 
 jest.mock('dgram');
 const mockedDgram = /** @type {jest.Mocked<typeof dgram>} */ (dgram);
+// Mock date
+Date.now = () => 0;
 
 const PORT = 50050;
 const ADDRESS = '0.0.0.0';
@@ -46,7 +48,12 @@ test('send-default', () => {
         jsonSocket.send(sentObject, PORT, ADDRESS, (e) => {
             expect(e).toBeFalsy();
             expect(mockSend).toHaveBeenCalledTimes(1);
-            expect(mockSend).toHaveBeenCalledWith(expect.anything(), PORT, ADDRESS, expect.anything());
+            expect(mockSend).toHaveBeenCalledWith(
+                buildBufferFromObj(sentObject, 1000)[0],
+                PORT,
+                ADDRESS,
+                expect.anything()
+            );
             done(null);
         });
     });
@@ -83,7 +90,12 @@ test('send-error', () => {
         jsonSocket.send(sentObject, PORT, ADDRESS, (e) => {
             expect(e).not.toBeFalsy();
             expect(mockSend).toHaveBeenCalledTimes(1);
-            expect(mockSend).toHaveBeenCalledWith(expect.anything(), PORT, ADDRESS, expect.anything());
+            expect(mockSend).toHaveBeenCalledWith(
+                buildBufferFromObj(sentObject, 1000)[0],
+                PORT,
+                ADDRESS,
+                expect.anything()
+            );
             done(null);
         });
     });
@@ -204,16 +216,19 @@ test('message-timeout', () => {
         const socket = mockedDgram.createSocket('udp4');
         const jsonSocket = new JSONSocket(socket);
         const messageErrorListener = jest.fn();
+        const messageCompleteListener = jest.fn();
         jsonSocket.on('message-error', messageErrorListener);
-        jsonSocket.on('message-complete', (msg, rinfo) => {
-            expect(rinfo).toEqual(rinfoTest);
-            expect(msg).toEqual(testJSON);
+        jsonSocket.on('message-complete', messageCompleteListener);
+        jsonSocket.on('message-timeout', (e) => {
+            expect(e).not.toBeFalsy();
             expect(messageErrorListener).not.toHaveBeenCalled();
+            expect(messageCompleteListener).not.toHaveBeenCalled();
             done(null);
         });
         const rinfoTest = { address: '127.0.0.1', port: 5666 };
         const testJSON = { dummy: 'Dummy' };
         const messagesTest = buildBufferFromObj(testJSON, 12);
-        for (const ms of messagesTest) mockCallback(ms, rinfoTest);
+        mockCallback(messagesTest[1], rinfoTest);
+        jest.runOnlyPendingTimers();
     });
 });
