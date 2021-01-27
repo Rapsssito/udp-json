@@ -29,7 +29,7 @@ A UDP datagram consists of a datagram header and a data section. In the data sec
 | ID (4 B) | Datagram count (4 B) | Current datagram (4 B) |
 +----------+----------------------+------------------------+
 |                                                          |
-|                    Partial Data                          |
+|                     Partial Data                         |
 |                                                          |
 +----------+----------------------+------------------------+
 ```
@@ -53,7 +53,7 @@ Example of sending the object `{ attribute: "dummy" }` split in two datagrams.
 | ID = 333 | Datagram count = 1   | Current datagram = 0   |
 +----------+----------------------+------------------------+
 |                                                          |
-|                       {attr                              |
+|                         {attr                            |
 |                                                          |
 +----------+----------------------+------------------------+
 
@@ -63,7 +63,7 @@ Example of sending the object `{ attribute: "dummy" }` split in two datagrams.
 |                                                          |
 |                    ibute: "dummy"}                       |
 |                                                          |
-+----------+---------------------+------------------------+
++----------+----------------------+------------------------+
 ```
 
 ## Usage
