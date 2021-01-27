@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/Rapsssito/udp-json/compare/v1.1.1...v1.1.2) (2021-01-27)
+
+
+### Bug Fixes
+
+* Switch from total datagrams to last datagram ([7702cd9](https://github.com/Rapsssito/udp-json/commit/7702cd9322cd90f9d0e729e47094ba04a06b5873))
+
 ## [1.1.1](https://github.com/Rapsssito/udp-json/compare/v1.1.0...v1.1.1) (2021-01-27)
 
 

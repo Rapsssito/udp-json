@@ -31,7 +31,7 @@ declare class JSONSocket extends EventEmitter<string | symbol, any> {
      * @private
      * @param {number} id
      * @param {number} currentDatagram
-     * @param {number} totalDatagram
+     * @param {number} lastDatagram
      */
     private _buildHeader;
     /**
