@@ -13,6 +13,7 @@ declare class JSONSocket extends EventEmitter<string | symbol, any> {
     /** @private @type {Map<string, PendingDatagram>} */
     private idMap;
     maxPayload: number;
+    timeout: number;
     /**
      * @param {any} obj
      * @param {number} port
@@ -45,6 +46,10 @@ declare class JSONSocket extends EventEmitter<string | symbol, any> {
      * @private
      */
     private _onDatagramError;
+    /**
+     * @private
+     */
+    private _onDatagramTimeout;
     /**
      * @private
      */

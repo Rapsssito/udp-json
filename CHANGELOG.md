@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Rapsssito/udp-json/compare/v1.0.0...v1.1.0) (2021-01-27)
+
+
+### Features
+
+* Add message-timeout event ([e7088ce](https://github.com/Rapsssito/udp-json/commit/e7088cefb372bb24cb7fec4e9d5749e299c3c11c))
+
 # 1.0.0 (2021-01-26)
 
 
