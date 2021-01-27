@@ -25,20 +25,20 @@ Lightweight JSON UDP socket API written in JavaScript for NodeJS. It provides a 
 A UDP datagram consists of a datagram header and a data section. In the data section of each UDP datagram, `udp-json` adds another header and a new data section. The header consists of 3 fields, each of which is 4 bytes (32 bits): 
 
 ```
-+----------+-----------------------+------------------------+
-| ID (4 B) | Total datagrams (4 B) | Current datagram (4 B) |
-+----------+-----------------------+------------------------+
-|                                                           |
-|                      Partial Data                         |
-|                                                           |
-+----------+-----------------------+------------------------+
++----------+---------------------+------------------------+
+| ID (4 B) | Last datagram (4 B) | Current datagram (4 B) |
++----------+---------------------+------------------------+
+|                                                         |
+|                    Partial Data                         |
+|                                                         |
++----------+---------------------+------------------------+
 ```
 
 ### ID <!-- omit in toc -->
 This field identifies to which data refers this partial data.
 
-### Total datagrams <!-- omit in toc -->
-This field specifies the number of UDP datagrams needed to complete the data.
+### Last datagram <!-- omit in toc -->
+This field specifies the index of the last UDP datagram needed to complete the data.
 
 ### Current datagram <!-- omit in toc -->
 This field identifies this UDP datagram location inside all the UDP datagrams to complete the data in the correct order.
@@ -49,21 +49,21 @@ Fragment of JSON stringified data encoded in `utf-8`.
 ### Example <!-- omit in toc -->
 Example of sending the object `{ attribute: "dummy" }` split in two datagrams.
 ```
-+----------+-----------------------+------------------------+
-| ID = 333 | Total datagrams = 1   | Current datagram = 0   |
-+----------+-----------------------+------------------------+
-|                                                           |
-|                         {attr                             |
-|                                                           |
-+----------+-----------------------+------------------------+
++----------+---------------------+------------------------+
+| ID = 333 | Last datagram = 1   | Current datagram = 0   |
++----------+---------------------+------------------------+
+|                                                         |
+|                       {attr                             |
+|                                                         |
++----------+---------------------+------------------------+
 
-+----------+-----------------------+------------------------+
-| ID = 333 | Total datagrams = 1   | Current datagram = 1   |
-+----------+-----------------------+------------------------+
-|                                                           |
-|                      ibute: "dummy"}                      |
-|                                                           |
-+----------+-----------------------+------------------------+
++----------+---------------------+------------------------+
+| ID = 333 | Last datagram = 1   | Current datagram = 1   |
++----------+---------------------+------------------------+
+|                                                         |
+|                    ibute: "dummy"}                      |
+|                                                         |
++----------+---------------------+------------------------+
 ```
 
 ## Usage

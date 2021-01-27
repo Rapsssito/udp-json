@@ -21,14 +21,14 @@ function buildBufferFromObj(obj, size) {
         const endPoint = startPoint + size > buff.length ? buff.length : startPoint + size;
         chunks.push(buff.slice(startPoint, endPoint));
     }
-    const totalDatagram = chunks.length - 1;
+    const lastDatagram = chunks.length - 1;
     const id = (Date.now() & 0xffffffff) >>> 0;
     const resultBuffers = chunks.map((ch, index) => {
         const header = Buffer.allocUnsafe(12);
         // ID
         header.writeUInt32BE(id);
-        // Total datagram
-        header.writeUInt32BE(totalDatagram, 4);
+        // Last datagram
+        header.writeUInt32BE(lastDatagram, 4);
         // Current datagram
         header.writeUInt32BE(index, 8);
         return Buffer.concat([header, ch]);
