@@ -50,7 +50,7 @@ Fragment of JSON stringified data encoded in `utf-8`.
 Example of sending the object `{ attribute: "dummy" }` split in two datagrams.
 ```
 +----------+----------------------+------------------------+
-| ID = 333 | Datagram count = 1   | Current datagram = 0   |
+| ID = 333 | Datagram count = 2   | Current datagram = 0   |
 +----------+----------------------+------------------------+
 |                                                          |
 |                         {attr                            |
@@ -58,7 +58,7 @@ Example of sending the object `{ attribute: "dummy" }` split in two datagrams.
 +----------+----------------------+------------------------+
 
 +----------+----------------------+------------------------+
-| ID = 333 | Datagram count = 1   | Current datagram = 1   |
+| ID = 333 | Datagram count = 2   | Current datagram = 1   |
 +----------+----------------------+------------------------+
 |                                                          |
 |                    ibute: "dummy"}                       |
