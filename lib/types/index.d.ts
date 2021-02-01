@@ -1,6 +1,10 @@
 /// <reference types="node" />
 export = JSONSocket;
-declare class JSONSocket extends EventEmitter<string | symbol, any> {
+/**
+ * @typedef {'message-complete' | 'message-timeout' | 'message-error'} EventTypes
+ * @extends {EventEmitter<EventTypes, any>}
+ */
+declare class JSONSocket extends EventEmitter<EventTypes, any> {
     /**
      * @param {import('dgram').Socket} udpSocket
      * @param {{maxPayload?: number, timeout?: number}} [options]
@@ -61,4 +65,8 @@ declare class JSONSocket extends EventEmitter<string | symbol, any> {
      */
     private _unwrapMessage;
 }
+declare namespace JSONSocket {
+    export { EventTypes };
+}
+type EventTypes = "message-complete" | "message-timeout" | "message-error";
 import EventEmitter = require("eventemitter3");

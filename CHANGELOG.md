@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Rapsssito/udp-json/compare/v1.1.3...v1.2.0) (2021-02-01)
+
+
+### Features
+
+* Add EventTypes typing ([0e9f3e7](https://github.com/Rapsssito/udp-json/commit/0e9f3e79eb2d8c062b30da94c3abbf1b5937c9d1))
+
 ## [1.1.3](https://github.com/Rapsssito/udp-json/compare/v1.1.2...v1.1.3) (2021-01-27)
 
 
