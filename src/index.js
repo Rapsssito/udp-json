@@ -71,6 +71,10 @@ class PendingDatagram {
     }
 }
 
+/**
+ * @typedef {'message-complete' | 'message-timeout' | 'message-error'} EventTypes
+ * @extends {EventEmitter<EventTypes, any>}
+ */
 class JSONSocket extends EventEmitter {
     /**
      * @param {import('dgram').Socket} udpSocket
