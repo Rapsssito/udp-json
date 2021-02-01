@@ -150,13 +150,15 @@ class JSONSocket extends EventEmitter {
      * @private
      */
     _loadListeners() {
-        this.udpSocket.on('message', this._onMessage);
+        this.udpSocket.on('message', (msg, rinfo) => this._onMessage(msg, rinfo));
     }
 
     /**
      * @private
+     * @param {Buffer} msg
+     * @param {import('dgram').RemoteInfo} rinfo
      */
-    _onMessage = (/** @type {Buffer} */ msg, /** @type {import('dgram').RemoteInfo} */ rinfo) => {
+    _onMessage(msg, rinfo) {
         const { id, currentDatagram, datagramCount, payload } = this._unwrapMessage(msg, rinfo);
         let pendingDatagram = this.idMap.get(id);
         if (pendingDatagram === undefined) {
@@ -170,47 +172,44 @@ class JSONSocket extends EventEmitter {
             this.idMap.set(id, pendingDatagram);
         }
         pendingDatagram.addPayload(currentDatagram, payload);
-    };
+    }
 
     /**
      * @private
+     * @param {string} id
+     * @param {string} partialPayload
+     * @param {import('dgram').RemoteInfo} rinfo
+     * @param {Error} error
      */
-    _onDatagramError = (
-        /** @type {string} */ id,
-        /** @type {string} */ partialPayload,
-        /** @type {import('dgram').RemoteInfo} */ rinfo,
-        /** @type {Error} */ error
-    ) => {
+    _onDatagramError(id, partialPayload, rinfo, error) {
         const buildError = new Error(`Error ${JSON.stringify(rinfo)} current payload ${partialPayload}: ${error}`);
         this.emit('message-error', buildError);
         this.idMap.delete(id);
-    };
+    }
 
     /**
      * @private
+     * @param {string} id
+     * @param {string} partialPayload
+     * @param {import('dgram').RemoteInfo} rinfo
+     * @param {Error} error
      */
-    _onDatagramTimeout = (
-        /** @type {string} */ id,
-        /** @type {string} */ partialPayload,
-        /** @type {import('dgram').RemoteInfo} */ rinfo,
-        /** @type {Error} */ error
-    ) => {
+    _onDatagramTimeout(id, partialPayload, rinfo, error) {
         const buildError = new Error(`Timeout ${JSON.stringify(rinfo)} current payload ${partialPayload}: ${error}`);
         this.emit('message-timeout', buildError);
         this.idMap.delete(id);
-    };
+    }
 
     /**
      * @private
+     * @param {string} id
+     * @param {any} payload
+     * @param {import('dgram').RemoteInfo} rinfo
      */
-    _onDatagramComplete = (
-        /** @type {string} */ id,
-        /** @type {any} */ payload,
-        /** @type {import('dgram').RemoteInfo} */ rinfo
-    ) => {
+    _onDatagramComplete(id, payload, rinfo) {
         this.emit('message-complete', payload, rinfo);
         this.idMap.delete(id);
-    };
+    }
 
     /**
      * @private
