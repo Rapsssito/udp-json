@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/Rapsssito/udp-json/compare/v1.2.0...v1.2.1) (2021-02-01)
+
+
+### Bug Fixes
+
+* Add NodeJS backwards compatibility ([57c469a](https://github.com/Rapsssito/udp-json/commit/57c469a1bc9bb0a9b2b717a535c93ebb946236c2))
+
 # [1.2.0](https://github.com/Rapsssito/udp-json/compare/v1.1.3...v1.2.0) (2021-02-01)
 
 

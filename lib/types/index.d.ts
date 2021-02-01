@@ -44,18 +44,31 @@ declare class JSONSocket extends EventEmitter<EventTypes, any> {
     private _loadListeners;
     /**
      * @private
+     * @param {Buffer} msg
+     * @param {import('dgram').RemoteInfo} rinfo
      */
     private _onMessage;
     /**
      * @private
+     * @param {string} id
+     * @param {string} partialPayload
+     * @param {import('dgram').RemoteInfo} rinfo
+     * @param {Error} error
      */
     private _onDatagramError;
     /**
      * @private
+     * @param {string} id
+     * @param {string} partialPayload
+     * @param {import('dgram').RemoteInfo} rinfo
+     * @param {Error} error
      */
     private _onDatagramTimeout;
     /**
      * @private
+     * @param {string} id
+     * @param {any} payload
+     * @param {import('dgram').RemoteInfo} rinfo
      */
     private _onDatagramComplete;
     /**
